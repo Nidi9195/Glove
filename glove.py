@@ -13,7 +13,7 @@ from scipy import sparse
 
 ''' Global variable declaration '''
 
-f1 = "text8.zip"
+f1 = "text_try.zip"
 window_size = 3
 epoch = 200
 lr = 0.1
@@ -35,12 +35,12 @@ def build_vocab(corpus):
     for line in corpus:
         tokens = line.strip().split()
         vocab.update(tokens)
-    return {word: (i, freq) for i, (word, freq) in enumerate(vocab.iteritems())}
+    return {word: (i, freq) for i, (word, freq) in enumerate(vocab.items())}
 
-def build_occur(vocab, corpus):
+def build_cooccur(vocab, corpus):
     print("Building cooccur")
     vocab_size = len(vocab)
-    id2word = dict((i, word) for word, (i, _) in vocab.iteritems())
+    id2word = dict((i, word) for word, (i, _) in vocab.items())
     cooccurrences = sparse.lil_matrix((vocab_size, vocab_size),dtype=np.float64)
     for i, line in enumerate(corpus):
         if i % 1000 == 0:
