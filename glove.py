@@ -9,7 +9,14 @@ import numpy as np
 import pickle
 from random import shuffle
 from scipy import sparse
-#from util import listify
+from functools import wraps
+
+def listify(fn):
+    @wraps(fn)
+    def listified(*args, **kwargs):
+        return list(fn(*args, **kwargs))
+
+    return listified
 
 ''' Global variable declaration '''
 
@@ -31,12 +38,17 @@ def read_data(filename):
 
 def build_vocab(corpus):
     print("Building vocab from corpus")
+    count = []
+    count.extend(Counter(corpus).most_common())
+    #print(count)
     vocab = Counter()
     for line in corpus:
         tokens = line.strip().split()
+        #print(tokens)
         vocab.update(tokens)
-    return {word: (i, freq) for i, (word, freq) in enumerate(vocab.items())}
+    return( {word: (i, freq) for i, (word, freq) in enumerate(vocab.items())})
 
+@listify
 def build_cooccur(vocab, corpus):
     print("Building cooccur")
     vocab_size = len(vocab)
@@ -72,9 +84,10 @@ def build_cooccur(vocab, corpus):
 
 def main():
     vocabulary_str, vocabulary = read_data(f1)
-    vocab = build_vocab(vocabulary_str)
+    vocab = build_vocab(vocabulary)
+    print("DONE!")
     cooccurrences = build_cooccur(vocab, vocabulary_str)
-
+    print(cooccurrences)
 
 if __name__== "__main__":
     main()
